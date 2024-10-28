@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres
+    hostname: localhost
+    ports:
+      - "${PG_PORT}:${PG_PORT}"
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASS}
+      POSTGRES_DB: ${PG_DB}
+      PGPORT: ${PG_PORT}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+volumes:
+  postgres-data:
