@@ -1,0 +1,55 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: 'http://loki:3100/loki/api/v1/push'
+
+scrape_configs:
+  - job_name: system
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: varlogs
+          __path__: /var/log/*log
+          stream: stdout
+  - job_name: postgres
+    pipeline_stages:
+      - json:
+          expressions:
+            severity: error_severity
+            timestamp: timestamp
+      - labels:
+          severity:
+      - timestamp:
+          source: timestamp
+          format: RFC3339Nano
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: "postgresql"
+          __path__: /var/log/postgresql/**/*.json
+  - job_name: api
+    pipeline_stages:
+      - json:
+          expressions:
+            level: level
+            timestamp: time
+      - labels:
+          level:
+      - timestamp:
+          source: time
+          format: RFC3339Nano
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: "api"
+          __path__: /var/log/api/**/*.log
+
+
