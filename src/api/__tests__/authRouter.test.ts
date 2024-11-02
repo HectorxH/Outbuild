@@ -1,13 +1,14 @@
-import { app, logger } from "../../../app";
+import { app } from "../../app";
 import request from "supertest";
-import { authLoginResponse, authSignupResponse } from "../authModel";
+import { authLoginResponse, authSignupResponse } from "../auth/authModel";
 import { StatusCodes } from "http-status-codes";
-import { OutbuildUser } from "../../../common/db/types";
+import { OutbuildUser } from "../../common/db/types";
 import argon2 from "argon2";
-import { errorResponse } from "../../../common/models/error";
+import { errorResponse } from "../../common/models/error";
+import { authService } from "../auth/authService";
 
-vi.mock("../authService", () => ({
-  authService: {
+vi.mock("../auth/authService", () => {
+  const service: typeof authService = {
     createUser: async () => ({ id: 0 }),
     findUserByEmail: async (): Promise<OutbuildUser> => ({
       id: 0,
@@ -15,8 +16,9 @@ vi.mock("../authService", () => ({
       password_hash: await argon2.hash("test"),
       created_at: new Date(),
     }),
-  },
-}));
+  };
+  return { authService: service };
+});
 
 describe("Auth Endpoints", () => {
   describe("POST /auth/signup", () => {

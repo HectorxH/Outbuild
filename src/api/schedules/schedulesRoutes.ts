@@ -1,8 +1,14 @@
 import express from "express";
 import { ZodOpenApiPathsObject } from "zod-openapi";
 import { scheduleController } from "./schedulesController";
-import { scheduleGetParam, schedulePostBody } from "./schedulesModel";
+import {
+  scheduleGetParam,
+  schedulePostBody,
+  scheduleResponse,
+} from "./schedulesModel";
 import { authenticateJWT } from "../../common/middleware/jwt";
+import { StatusCodes } from "http-status-codes";
+import { errorResponse } from "../../common/models/error";
 
 const router = express.Router();
 
@@ -27,8 +33,29 @@ schedulesOpenApi["/schedule"] = {
       },
     },
     responses: {
-      200: {
-        description: "New Schedule.",
+      [StatusCodes.OK]: {
+        description: "Ok",
+        content: {
+          "application/json": {
+            schema: scheduleResponse,
+          },
+        },
+      },
+      [StatusCodes.UNPROCESSABLE_ENTITY]: {
+        description: "Unprocessable Entity",
+        content: {
+          "application/json": {
+            schema: errorResponse,
+          },
+        },
+      },
+      [StatusCodes.UNAUTHORIZED]: {
+        description: "Unauthorized",
+        content: {
+          "application/json": {
+            schema: errorResponse,
+          },
+        },
       },
     },
   },
@@ -41,14 +68,35 @@ router.get(
 );
 schedulesOpenApi["/schedule/{schedule_id}"] = {
   get: {
-    description: "Retrieve a schedule along with its activities.",
+    description: "Retrieve a schedule whitout its activities.",
     summary: "Retrive a schedule.",
     tags: ["schedules"],
     security: [{ bearerAuth: [] }],
     requestParams: { path: scheduleGetParam },
     responses: {
-      200: {
-        description: "New Schedule.",
+      [StatusCodes.OK]: {
+        description: "Ok",
+        content: {
+          "application/json": {
+            schema: scheduleResponse,
+          },
+        },
+      },
+      [StatusCodes.UNPROCESSABLE_ENTITY]: {
+        description: "Unprocessable Entity",
+        content: {
+          "application/json": {
+            schema: errorResponse,
+          },
+        },
+      },
+      [StatusCodes.UNAUTHORIZED]: {
+        description: "Unauthorized",
+        content: {
+          "application/json": {
+            schema: errorResponse,
+          },
+        },
       },
     },
   },

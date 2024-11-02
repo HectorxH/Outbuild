@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import z from "zod";
+import { OutbuildApiError } from "../models/error";
+import { StatusCodes } from "http-status-codes";
 
 const accessSecret = process.env.JWT_ACCESS_SECRET || "sample_secret_token";
 const algorithm = "HS256";
@@ -27,7 +29,13 @@ const authenticateJWT = async (
   const token = authHeader.split(" ")[1];
 
   if (!token) {
-    next(new Error("No authorization token."));
+    return next(
+      new OutbuildApiError(
+        "NoAuthError",
+        StatusCodes.UNPROCESSABLE_ENTITY,
+        "Invalid 'Authorization' header.",
+      ),
+    );
   }
 
   try {

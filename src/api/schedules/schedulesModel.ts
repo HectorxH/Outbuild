@@ -1,19 +1,20 @@
 import z from "zod";
+import { apiResponse } from "../../common/models/response";
 
 export const schedulePostBody = z.object({
   name: z.string(),
   url: z.string().url(),
 });
 
-export const scheduleGetParam = z.object({ schedule_id: z.number() });
+export const scheduleGetParam = z.object({ schedule_id: z.coerce.number() });
 
-export const scheduleResponse = z.object({
-  data: z.object({
+export const scheduleResponse = apiResponse(
+  z.object({
     id: z.number(),
     user_id: z.number(),
     name: z.string(),
     url: z.string().url(),
-    createdAt: z.date(),
-    activities: z.object({}),
+    created_at: z.coerce.date(),
   }),
-});
+);
+export type ScheduleResponse = z.infer<typeof scheduleResponse>;

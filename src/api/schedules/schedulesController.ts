@@ -1,7 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { scheduleGetParam, schedulePostBody } from "./schedulesModel";
-import { NewSchedule } from "../../common/db/types";
-import { db } from "../../common/db/db";
+import {
+  scheduleGetParam,
+  schedulePostBody,
+  ScheduleResponse,
+} from "./schedulesModel";
+import { validateBody, validateParams } from "../../common/utils/validation";
+import { scheduleService } from "./scheduleService";
 
 class ScheduleController {
   public createEmptySchedule = async (
@@ -10,17 +14,17 @@ class ScheduleController {
     next: NextFunction,
   ) => {
     try {
-      const { name, url } = schedulePostBody.parse(req.body);
+      const { name, url } = await validateBody(schedulePostBody, req.body);
       const { id } = req.auth;
-      const newSchedule: NewSchedule = { name, url, user_id: id };
 
-      const schedule = await db
-        .insertInto("schedule")
-        .values(newSchedule)
-        .returningAll()
-        .executeTakeFirstOrThrow();
+      const schedule = await scheduleService.createSchedule({
+        name,
+        url,
+        user_id: id,
+      });
 
-      res.status(200).json(schedule);
+      const response: ScheduleResponse = { data: schedule };
+      res.status(200).json(response);
     } catch (e) {
       next(e);
     }
@@ -32,15 +36,15 @@ class ScheduleController {
     next: NextFunction,
   ) => {
     try {
-      const { schedule_id } = scheduleGetParam.parse(req.params);
+      const { schedule_id } = await validateParams(
+        scheduleGetParam,
+        req.params,
+      );
 
-      const schedule = await db
-        .selectFrom("schedule")
-        .where("id", "=", schedule_id)
-        .selectAll()
-        .executeTakeFirstOrThrow();
+      const schedule = await scheduleService.getScheduleById(schedule_id);
 
-      res.status(200).json(schedule);
+      const response: ScheduleResponse = { data: schedule };
+      res.status(200).json(response);
     } catch (e) {
       next(e);
     }

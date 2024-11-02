@@ -1,7 +1,9 @@
 import express from "express";
 import { ZodOpenApiPathsObject } from "zod-openapi";
 import { authController } from "./authController";
-import { authBody, authSignupResponse } from "./authModel";
+import { authBody, authLoginResponse, authSignupResponse } from "./authModel";
+import { StatusCodes } from "http-status-codes";
+import { errorResponse } from "../../common/models/error";
 
 const router = express.Router();
 const authOpenApi: ZodOpenApiPathsObject = {};
@@ -20,10 +22,19 @@ authOpenApi["/auth/signup"] = {
       },
     },
     responses: {
-      200: {
+      [StatusCodes.OK]: {
+        description: "Ok",
         content: {
           "application/json": {
             schema: authSignupResponse,
+          },
+        },
+      },
+      [StatusCodes.UNPROCESSABLE_ENTITY]: {
+        description: "Unprocessable Entity",
+        content: {
+          "application/json": {
+            schema: errorResponse,
           },
         },
       },
@@ -45,8 +56,29 @@ authOpenApi["/auth/login"] = {
       },
     },
     responses: {
-      200: {
-        description: "New User.",
+      [StatusCodes.OK]: {
+        description: "Ok",
+        content: {
+          "application/json": {
+            schema: authLoginResponse,
+          },
+        },
+      },
+      [StatusCodes.UNPROCESSABLE_ENTITY]: {
+        description: "Unprocessable Entity",
+        content: {
+          "application/json": {
+            schema: errorResponse,
+          },
+        },
+      },
+      [StatusCodes.UNAUTHORIZED]: {
+        description: "Unauthorized",
+        content: {
+          "application/json": {
+            schema: errorResponse,
+          },
+        },
       },
     },
   },
