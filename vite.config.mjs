@@ -6,6 +6,8 @@ export default defineConfig({
     coverage: {
       exclude: ["node_modules/**", "src/index.ts"],
     },
+    globals: true,
+    restoreMocks: true,
   },
   plugins: [tsconfigPaths()],
 });

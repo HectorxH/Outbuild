@@ -14,6 +14,8 @@ export interface Database {
 
 export interface OutbuildUserTable {
   id: Generated<number>;
+  email: string;
+  password_hash: string;
   created_at: ColumnType<Date, string | undefined, never>;
 }
 
@@ -23,6 +25,7 @@ export type OutbuildUserUpdate = Updateable<OutbuildUserTable>;
 
 export interface ScheduleTable {
   id: Generated<number>;
+  user_id: number;
   name: string;
   url: string;
   created_at: ColumnType<Date, string | undefined, never>;
@@ -34,6 +37,7 @@ export type ScheduleUpdate = Updateable<ScheduleTable>;
 
 export interface ActivityTable {
   id: Generated<number>;
+  schedule_id: number;
   name: string;
   start_date: Date;
   end_date: Date;

@@ -1,20 +1,15 @@
 import { Database } from "./types";
 import { Pool } from "pg";
 import { Kysely, PostgresDialect } from "kysely";
-
-const host = "localhost";
-const port = "5432";
-const database = "outbuild";
-const user = process.env.PG_USER || "postgres";
-const password = process.env.PG_PASS || "postgres";
+import { dbConfig } from "../utils/configs";
 
 const dialect = new PostgresDialect({
   pool: new Pool({
-    host,
-    port: parseInt(port),
-    database,
-    user,
-    password,
+    host: dbConfig.host,
+    port: parseInt(dbConfig.port),
+    database: dbConfig.database,
+    user: dbConfig.user,
+    password: dbConfig.password,
     max: 10,
   }),
 });

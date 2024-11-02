@@ -3,26 +3,30 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/index.js",
-    "build": "tsc",
-    "start": "node dist/index.js > /var/log/outbuild.log",
-    "migrate": "tsc && node dist/db/migrate.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/index.js | pino-pretty",
+    "clear": "rm -rf dist/",
+    "build": "npm run clear && tsc",
+    "start": "NODE_ENV=production pm2 start dist/index.js -i max > /var/log/outbuild.log",
+    "migrate": "npm run build && node dist/common/db/migrate.js",
+    "test": "vitest"
   },
   "author": "Hector Larranaga",
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@types/argon2": "^0.15.4",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/helmet": "^4.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/pg": "^8.11.10",
     "@types/pino": "^7.0.5",
     "@types/pino-http": "^5.8.4",
-    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/supertest": "^6.0.2",
     "@types/swagger-ui-express": "^4.1.6",
     "eslint": "^9.13.0",
     "globals": "^15.11.0",
+    "pino-pretty": "^11.3.0",
     "prettier": "^3.3.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
@@ -32,14 +36,21 @@
     "vitest": "^2.1.4"
   },
   "dependencies": {
+    "argon2": "^0.41.1",
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "helmet": "^8.0.0",
+    "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.2",
     "kysely": "^0.27.4",
     "pg": "^8.13.1",
     "pino": "^9.5.0",
     "pino-http": "^10.3.0",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "pm2": "^5.4.2",
+    "supertest": "^7.0.0",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^11.0.2",
+    "zod": "^3.23.8",
+    "zod-openapi": "^3.3.0"
   }
 }
