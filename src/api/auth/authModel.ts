@@ -13,3 +13,10 @@ export const authSignupResponse = apiResponse(
   }),
 );
 export type AuthSignupResponse = z.infer<typeof authSignupResponse>;
+
+export const authLoginResponse = apiResponse(
+  z.object({
+    token: z.string(),
+  }),
+);
+export type AuthLoginResponse = z.infer<typeof authLoginResponse>;
