@@ -13,9 +13,16 @@ export async function up(db: Kysely<any>): Promise<void> {
     .execute();
 
   await db.schema
+    .createIndex("outbuild_user_email")
+    .using("hash")
+    .on("outbuild_user")
+    .column("email")
+    .execute();
+
+  await db.schema
     .createTable("schedule")
     .addColumn("id", "serial", (col) => col.primaryKey())
-    .addColumn("owner_id", "integer", (col) =>
+    .addColumn("user_id", "integer", (col) =>
       col.references("outbuild_user.id").onDelete("cascade").notNull(),
     )
     .addColumn("name", "varchar", (col) => col.notNull())

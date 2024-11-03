@@ -4,8 +4,8 @@ import { StatusCodes } from "http-status-codes";
 import { NextFunction, Request, Response } from "express";
 import * as jwtmiddleware from "../../common/middleware/jwt";
 import { NewSchedule } from "../../common/db/types";
-import { scheduleService } from "../schedules/scheduleService";
-import { scheduleResponse } from "../schedules/schedulesModel";
+import { scheduleService } from "../schedule/scheduleService";
+import { scheduleResponse } from "../schedule/schedulesModel";
 import { errorResponse } from "../../common/models/error";
 
 vi.mock("../../common/middleware/jwt", async (importOriginal) => {
@@ -23,7 +23,7 @@ vi.mock("../../common/middleware/jwt", async (importOriginal) => {
   };
 });
 
-vi.mock("../schedules/scheduleService", () => {
+vi.mock("../schedule/scheduleService", () => {
   const service: typeof scheduleService = {
     createSchedule: async (newSchedule: NewSchedule) => ({
       id: 0,
@@ -44,13 +44,14 @@ vi.mock("../schedules/scheduleService", () => {
         created_at: new Date(),
       };
     },
+    checkScheduleOwnership: async (user_id: number) => user_id === 0,
   };
   return { scheduleService: service };
 });
 
 describe("Schedule Endpoints", () => {
   describe("POST /schedule", () => {
-    it("should create a new user", async () => {
+    it("should create a new schedule for the current user", async () => {
       const requestBody = {
         name: "test",
         url: "http://www.test.com",

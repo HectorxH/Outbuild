@@ -19,7 +19,7 @@ class AuthService {
       throw new OutbuildApiError(
         "ServiceError",
         StatusCodes.INTERNAL_SERVER_ERROR,
-        "Error while inserting new user into the DB.",
+        "Error while inserting new user into the Users table.",
       );
     }
   };
@@ -38,7 +38,7 @@ class AuthService {
       throw new OutbuildApiError(
         "ServiceError",
         StatusCodes.INTERNAL_SERVER_ERROR,
-        "Error while finding user by email on the DB.",
+        "Error while finding user by email on the Users table.",
       );
     }
   };

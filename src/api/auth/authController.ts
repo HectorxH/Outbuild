@@ -7,7 +7,6 @@ import { authService } from "./authService";
 import { validateBody } from "../../common/utils/validation";
 import { OutbuildApiError } from "../../common/models/error";
 import { StatusCodes } from "http-status-codes";
-import { logger } from "../../app";
 
 class AuthController {
   public signup = async (req: Request, res: Response, next: NextFunction) => {
@@ -28,14 +27,11 @@ class AuthController {
       const { email, password } = await validateBody(authBody, req.body);
       const user = await authService.findUserByEmail(email);
 
-      logger.info({ password_hash: user.password_hash, password });
       if (!(await argon2.verify(user.password_hash, password))) {
-        return next(
-          new OutbuildApiError(
-            "LoginError",
-            StatusCodes.UNAUTHORIZED,
-            "Invalid password.",
-          ),
+        throw new OutbuildApiError(
+          "LoginError",
+          StatusCodes.UNAUTHORIZED,
+          "Invalid password.",
         );
       }
 

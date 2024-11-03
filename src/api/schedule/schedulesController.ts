@@ -40,8 +40,9 @@ class ScheduleController {
         scheduleGetParam,
         req.params,
       );
+      const { id } = req.auth;
 
-      const schedule = await scheduleService.getScheduleById(schedule_id);
+      const schedule = await scheduleService.getScheduleById(id, schedule_id);
 
       const response: ScheduleResponse = { data: schedule };
       res.status(200).json(response);

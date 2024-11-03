@@ -7,8 +7,8 @@ import * as swaggerUi from "swagger-ui-express";
 import { createDocument } from "zod-openapi";
 
 import auth, { authOpenApi } from "./api/auth/authRoutes";
-import schedules, { schedulesOpenApi } from "./api/schedules/schedulesRoutes";
-import activities, { activitiesOpenApi } from "./api/activities/activityRoutes";
+import schedules, { schedulesOpenApi } from "./api/schedule/schedulesRoutes";
+import activities, { activitiesOpenApi } from "./api/activity/activityRoutes";
 import errorHandler from "./common/middleware/errorHandler";
 
 const app = express();
