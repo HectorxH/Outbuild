@@ -6,7 +6,7 @@
     "dev": "tsx watch src/index.js | pino-pretty",
     "clear": "rm -rf dist/",
     "build": "npm run clear && tsc",
-    "start": "NODE_ENV=production pm2 start dist/index.js -i max > /var/log/outbuild.log",
+    "start": "NODE_ENV=production pm2 start dist/index.js -i max -l /var/log/outbuild.log",
     "migrate": "npm run build && node dist/common/db/migrate.js",
     "test": "vitest"
   },

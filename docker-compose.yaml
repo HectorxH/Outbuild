@@ -23,17 +23,29 @@ services:
   api:
     build:
       context: .
+    environment:
+      PG_HOST: postgres
+      PG_DB: outbuild
     ports:
       - "8000:8000"
     volumes:
       - api-log:/var/log
     networks:
       - backend
+    develop:
+      watch:
+        - action: rebuild
+          path: ./src
+        - action: rebuild
+          path: ./package-lock.json
 
   loki:
     image: grafana/loki:2.9.2
     ports:
       - "3100:3100"
+    volumes:
+      - ./o11y/loki-config.yaml:/etc/loki/config.yaml
+    command: -config.file=/etc/loki/config.yaml
     networks:
       - backend
 
@@ -42,7 +54,7 @@ services:
     volumes:
       - pg-log:/var/log/postgresql
       - api-log:/var/log/api
-      - ./promtail-config.yml:/etc/promtail/config.yml
+      - ./o11y/promtail-config.yml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
     networks:
       - backend
@@ -55,6 +67,9 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
     image: grafana/grafana:latest
+    volumes:
+      - ./o11y/grafana-main.yaml:/etc/grafana/provisioning/dashboards/main.yaml
+      - ./o11y/grafana-dashboard.json:/var/lib/grafana/dashboards/outbuild.json
     entrypoint:
       - sh
       - -euc

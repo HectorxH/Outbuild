@@ -8,4 +8,4 @@ COPY ./src ./src
 COPY ./tsconfig.json .
 RUN npm run build
 
-CMD ["npm", "run", "start"]
+CMD npm run start && tail -f /var/log/outbuild.log
